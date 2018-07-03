@@ -19,12 +19,23 @@ class VerificationCodesController extends Controller
 
             try {
                 $result = $easySms->send($phone, [
-                    'content'  =>  "【Lbbs社区】您的验证码是{$code}。如非本人操作，请忽略本短信"
+                    'content'  =>  "【甘德霖】您的验证码是{$code}。如非本人操作，请忽略本短信"
                 ]);
             } catch (\Overtrue\EasySms\Exceptions\NoGatewayAvailableException $exception) {
                 $message = $exception->getException('yunpian')->getMessage();
                 return $this->response->errorInternal($message ?? '短信发送异常');
             }
+
         }
+
+        $key = 'verificationCode_'.str_random(15);
+        $expiredAt = now()->addMinutes(10);
+        // 缓存验证码 10分钟过期。
+        \Cache::put($key, ['phone' => $phone, 'code' => $code], $expiredAt);
+
+        return $this->response->array([
+            'key' => $key,
+            'expired_at' => $expiredAt->toDateTimeString(),
+        ])->setStatusCode(201);
     }
 }

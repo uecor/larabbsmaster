@@ -21,6 +21,8 @@ $api->version('v1', [
      'middleware' => 'serializer:array'
 ], function($api) {
 
+//group1
+
     $api->group([
         'middleware' => 'api.throttle',
         'limit' => config('api.rate_limits.sign.limit'),
@@ -49,6 +51,9 @@ $api->version('v1', [
           ->name('api.authorizations.destroy');
 
     });
+
+
+//group2
       $api->group([
           'middleware' => 'api.throttle',
           'limit' => config('api.rate_limits.access.limit'),
@@ -57,18 +62,21 @@ $api->version('v1', [
         // 游客可以访问的接口
         $api->get('categories', 'CategoriesController@index')
             ->name('api.categories.index');
-
           // 需要 token 验证的接口
           $api->group(['middleware' => 'api.auth'], function($api) {
-              // 当前登录用户信息
-              $api->get('user', 'UsersController@me')
-                  ->name('api.user.show');
-                  // 图片资源
-          $api->post('images', 'ImagesController@store')
-              ->name('api.images.store');
-              // 编辑登录用户信息
-          $api->patch('user', 'UsersController@update')
-              ->name('api.user.update');
+                // 当前登录用户信息
+                $api->get('user', 'UsersController@me')
+                      ->name('api.user.show');
+                                  // 图片资源
+                $api->post('images', 'ImagesController@store')
+                    ->name('api.images.store');
+                // 发布话题
+                $api->post('topics', 'TopicsController@store')
+                    ->name('api.topics.store');
+
+                  // 编辑登录用户信息
+               $api->patch('user', 'UsersController@update')
+                  ->name('api.user.update');
           });
       });
 

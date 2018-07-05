@@ -37,5 +37,8 @@ class AppServiceProvider extends ServiceProvider
         \API::error(function (\Illuminate\Database\Eloquent\ModelNotFoundException $exception) {
             abort(404);
         });
+        \API::error(function (\Illuminate\Auth\Access\AuthorizationException $exception) {
+          abort(403, $exception->getMessage());
+       });
     }
 }

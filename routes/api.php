@@ -64,8 +64,13 @@ $api->version('v1', [
             ->name('api.categories.index');
         $api->get('topics', 'TopicsController@index')
             ->name('api.topics.index');
+          //某个用户发表的话题
         $api->get('users/{user}/topics', 'TopicsController@userIndex')
         ->name('api.users.topics.index');
+        // 话题回复列表
+        $api->get('topics/{topic}/replies', 'RepliesController@index')
+            ->name('api.topics.replies.index');
+
         //话题详情
         $api->get('topics/{topic}', 'TopicsController@show')
          ->name('api.topics.show');
@@ -88,7 +93,16 @@ $api->version('v1', [
               ->name('api.topics.destroy');
               // 发布回复
               $api->post('topics/{topic}/replies', 'RepliesController@store')
-                  ->name('api.topics.replies.store');                //
+                  ->name('api.topics.replies.store');
+              // 删除回复
+              $api->delete('topics/{topic}/replies/{reply}', 'RepliesController@destroy')
+                  ->name('api.topics.replies.destroy');
+              // 通知列表
+              $api->get('user/notifications', 'NotificationsController@index')
+                  ->name('api.user.notifications.index');
+                  // 通知统计
+              $api->get('user/notifications/stats', 'NotificationsController@stats')
+                  ->name('api.user.notifications.stats');
 
                   // 编辑登录用户信息
                $api->patch('user', 'UsersController@update')
